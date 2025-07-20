@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{{.Thread.Title}}</title>
+    <link rel="stylesheet" href="/static/styles/dvach.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<div id="img-modal" class="img-modal" style="display:none;">
+    <span class="img-modal__close" id="img-modal-close">&times;</span>
+    <img class="img-modal__img" id="img-modal-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="preview">
+</div>
+<div class="dvach-layout">
+    <nav class="dvach-nav">
+        <div class="dvach-nav__title">Доски</div>
+        <ul class="dvach-nav__list">
+            <li><a href="/boards/a">/a/ Аниме</a></li>
+            <li><a href="/boards/b">/b/ Бред</a></li>
+            <li><a href="/boards/po">/po/ Политика</a></li>
+            <li><a href="/boards/news">/news/ Новости</a></li>
+            <li><a href="/boards/soc">/soc/ Общение</a></li>
+            <li><a href="/boards/media">/media/ Анимация</a></li>
+            <li><a href="/boards/api">/api/ API</a></li>
+            <li><a href="/boards/rf">/rf/ Убежище</a></li>
+        </ul>
+    </nav>
+    <main class="dvach-main">
+        <div class="thread-container">
+            <a href="/boards/{{.Thread.BoardSlug}}">Назад к доске</a>
+            <h1>{{.Thread.Title}}</h1>
+            <div class="thread-meta">
+                <span>Автор: {{.Thread.Author}}</span>
+                <span>Дата: {{.Thread.CreatedAt.Format "02.01.2006 15:04"}}</span>
+                <span>№{{.Thread.ID}}</span>
+            </div>
+            <div class="thread-posts">
+                {{range .Posts}}
+                <div class="post">
+                    {{if .ImageURL}}
+                    <img src="{{.ImageURL}}" alt="image" class="post-image">
+                    {{end}}
+                    <div class="post-content">
+                        <div class="post-meta">
+                            <span>Аноним</span>
+                            <span>{{.CreatedAt.Format "02.01.2006 15:04"}}</span>
+                            <span>№{{.ID}}</span>
+                        </div>
+                        <div class="post-text">{{.Text}}</div>
+                    </div>
+                </div>
+                {{end}}
+            </div>
+            <form class="post-form" action="/threads/{{.Thread.ID}}/posts" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="board_slug" value="{{.Thread.BoardSlug}}">
+                <input type="text" name="author" placeholder="Автор (опционально)" class="post-form__input">
+                <textarea name="text" placeholder="Текст" class="post-form__textarea"></textarea>
+                <label for="image-upload" class="visually-hidden">Картинка</label>
+                <input type="file" id="image-upload" name="image" accept="image/*" class="post-form__input" title="Загрузить картинку">
+                <button type="submit" class="post-form__button">Ответить</button>
+            </form>
+        </div>
+    </main>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.post-image').forEach(function(img) {
+            img.style.cursor = 'zoom-in';
+            img.addEventListener('click', function() {
+                var modal = document.getElementById('img-modal');
+                var modalImg = document.getElementById('img-modal-img');
+                modal.style.display = 'flex';
+                modalImg.src = this.src;
+            });
+        });
+        document.getElementById('img-modal-close').onclick = function() {
+            document.getElementById('img-modal').style.display = 'none';
+        };
+        document.getElementById('img-modal').onclick = function(e) {
+            if (e.target === this) this.style.display = 'none';
+        };
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') document.getElementById('img-modal').style.display = 'none';
+        });
+    });
+    </script>
+</body>
+</html>
