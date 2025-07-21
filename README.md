@@ -15,7 +15,7 @@
 - Go (Golang)
 - PostgreSQL
 - HTML5 + Go templates
-- CSS (классический стиль 2ch)
+- CSS 
 - JS (минимум, только для модального окна)
 
 ## Скриншоты
