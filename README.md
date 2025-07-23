@@ -7,7 +7,11 @@ Inspired by classic boards like 2channel and 4chan.
 
 ---
 
-## Youtube video on how things done
+## Youtube video on how things done:
+
+Click the link or the image below
+
+link: https://www.youtube.com/watch?v=QW0xHsxjweg
 
 [![Watch the video](/images/6.png)](https://www.youtube.com/watch?v=QW0xHsxjweg)
 
