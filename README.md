@@ -5,6 +5,18 @@ Inspired by classic boards like 2channel and 4chan.
 
 ![Header](/images/1.jpg)
 
+## 📑 Table of Contents
+
+- [📺 Video Demo](#youtube-video-on-how-things-done)
+- [🖼️ Screenshots](#screenshots)
+- [⚙️ Stack](#️stack)
+- [🔧 Features](#features)
+  - [🧭 Public Pages](#-public-pages)
+  - [🧵 Boards & Threads](#-boards--threads)
+  - [💬 Posts](#-posts)
+  - [🔐 Admin Panel](#-admin-panel)
+- [📁 Project Structure](#project-structure)
+
 ---
 
 ## Youtube video on how things done:
