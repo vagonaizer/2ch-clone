@@ -18,7 +18,7 @@ type App struct {
 
 func NewApp() *App {
 	// 1. Подключение к БД
-	dsn := "postgres://YOUR_ACCOUNT:YOUR_PASSWORD@localhost:5432/YOUR_DB?sslmode=disable"
+	dsn := "postgres://postgres:110920@localhost:5432/chan?sslmode=disable"
 	pool, err := postgres.NewPostgresPool(context.Background(), dsn)
 	if err != nil {
 		log.Fatalf("failed to connect to db: %v", err)
