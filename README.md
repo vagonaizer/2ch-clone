@@ -57,3 +57,46 @@ Simple overview of the board with thread previews.
 - **HTMX** — minimal JS interactivity
 - **HTML Templates** — clean, fast-rendered pages
 
+## 🔧 Features
+
+### 🧭 Public Pages
+
+- `/` — Homepage with navigation
+- `/about` — About project
+- `/boards/:slug` — View board page
+- `/threads/:id` — View single thread and posts
+
+---
+
+### 🧵 Boards & Threads
+
+- `GET /boards` — List all boards
+- `GET /boards/:slug/threads` — Get threads by board
+- `POST /boards/:slug/threads` — Create new thread
+- `PATCH /threads/:id/sticky` — Toggle sticky flag
+- `PATCH /threads/:id/lock` — Toggle locked flag
+- `DELETE /threads/:id` — Delete thread
+
+---
+
+### 💬 Posts
+
+- `GET /threads/:id/posts` — Get posts in thread
+- `POST /threads/:id/posts` — Create new post
+- `GET /posts/:id` — View single post (API)
+- `DELETE /posts/:id` — Delete post
+
+---
+
+### 🔐 Admin Panel
+
+- `GET /admin/login` — Admin login page
+- `POST /admin/login` — Login submission
+- `GET /admin/logout` — Logout
+- `GET /admin` — Admin dashboard (with auth)
+- `POST /admin/threads/:id/delete` — Delete thread
+- `POST /admin/threads/:id/sticky` — Make thread sticky
+- `POST /admin/threads/:id/lock` — Lock thread
+
+---
+
