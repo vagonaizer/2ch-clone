@@ -100,3 +100,32 @@ Simple overview of the board with thread previews.
 
 ---
 
+### Project Structure
+
+```
+2ch-clone/
+├── cmd/
+│   └── vagonach/               # Main entrypoint (main.go)
+├── internal/
+│   ├── app/                    # App startup logic
+│   ├── config/                 # Configuration management
+│   ├── db/
+│   │   ├── migrations/         # SQL migrations (up/down)
+│   │   └── postgres/           # PostgreSQL connection setup
+│   ├── entity/                 # Domain models (Board, Thread, Post, etc.)
+│   ├── repository/             # Repository interfaces & implementations
+│   │   └── postgresql/         # PostgreSQL-specific repos
+│   ├── transport/
+│   │   └── http/               # HTTP handlers and routing
+│   └── usecase/                # Business logic services
+├── web/
+│   ├── img/                    # Static images (logo, banner, etc.)
+│   ├── styles/                 # CSS stylesheets
+│   ├── templates/              # HTML templates for pages
+│   └── uploads/                # Uploaded files (if used)
+├── images/                    # Screenshots for README
+├── configs/                   # App configs (WIP or placeholder)
+├── go.mod / go.sum            # Go modules
+└── README.md
+```
+
