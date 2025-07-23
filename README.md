@@ -30,6 +30,8 @@ link: https://www.youtube.com/watch?v=QW0xHsxjweg
 
 ---
 
+## Screanshots
+
 ### 💬 1. Thread View with Posts
 
 A thread page with the original post, replies below, and a reply form.
