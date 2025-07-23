@@ -1,7 +1,7 @@
 # 🍀 Vagonach: 4chan-clone
 
 A lightweight imageboard-style forum built with **Golang**, **PostgreSQL**, and **HTMX**.  
-Inspired by classic boards like 2ch and 4chan — simple threads, clean layout, and no fluff.
+Inspired by classic boards like 2channel and 4chan.
 
 ![Header](/images/1.jpg)
 
