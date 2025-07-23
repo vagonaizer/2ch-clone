@@ -7,7 +7,7 @@ Inspired by classic boards like 2channel and 4chan.
 
 ---
 
-[![Watch the video](https://i.sstatic.net/Vp2cE.png)](https://www.youtube.com/watch?v=QW0xHsxjweg)
+[![Watch the video](/images/6.png)](https://www.youtube.com/watch?v=QW0xHsxjweg)
 
 
 ---
