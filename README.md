@@ -57,10 +57,3 @@ Simple overview of the board with thread previews.
 - **HTMX** — minimal JS interactivity
 - **HTML Templates** — clean, fast-rendered pages
 
----
-
-## 🚀 Getting Started
-
-```bash
-go mod tidy
-go run main.go
