@@ -35,7 +35,7 @@ Manage threads: pin, lock, delete, and more.
 
 Simple overview of the board with thread previews.
 
-![Homepage](/images/5.jpg)
+![Homepage](/images/5.png)
 
 ---
 
