@@ -64,14 +64,14 @@ Simple overview of the board with thread previews.
 
 ---
 
-## ⚙️ Stack
+## Stack
 
 - **Go (Golang)** — backend logic
 - **PostgreSQL** — persistent thread & post storage
 - **HTMX** — minimal JS interactivity
 - **HTML Templates** — clean, fast-rendered pages
 
-## 🔧 Features
+## Features
 
 ### 🧭 Public Pages
 
