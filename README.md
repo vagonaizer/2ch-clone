@@ -7,6 +7,11 @@ Inspired by classic boards like 2channel and 4chan.
 
 ---
 
+[![Watch the video](https://i.sstatic.net/Vp2cE.png)](https://www.youtube.com/watch?v=QW0xHsxjweg)
+
+
+---
+
 ### 💬 1. Thread View with Posts
 
 A thread page with the original post, replies below, and a reply form.
