@@ -1,4 +1,4 @@
-# 🧵 Go Forum — A Minimal Imageboard in Go
+# 🍀 Vagonach: 4chan-clone
 
 A lightweight imageboard-style forum built with **Golang**, **PostgreSQL**, and **HTMX**.  
 Inspired by classic boards like 2ch and 4chan — simple threads, clean layout, and no fluff.
