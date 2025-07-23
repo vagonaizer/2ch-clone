@@ -13,10 +13,11 @@ type Post struct {
 	imageURL  *string
 	parentID  *int64
 	tripcode  *string
+	ipAddress string // новое поле для IP-адреса
 }
 
 // Конструктор
-func NewPost(threadID int64, boardSlug, author, text string, imageURL *string, parentID *int64, tripcode *string) *Post {
+func NewPost(threadID int64, boardSlug, author, text string, imageURL *string, parentID *int64, tripcode *string, ipAddress string) *Post {
 	return &Post{
 		threadID:  threadID,
 		boardSlug: boardSlug,
@@ -26,6 +27,7 @@ func NewPost(threadID int64, boardSlug, author, text string, imageURL *string, p
 		imageURL:  imageURL,
 		parentID:  parentID,
 		tripcode:  tripcode,
+		ipAddress: ipAddress,
 	}
 }
 
@@ -39,6 +41,7 @@ func (p *Post) CreatedAt() time.Time { return p.createdAt }
 func (p *Post) ImageURL() *string    { return p.imageURL }
 func (p *Post) ParentID() *int64     { return p.parentID }
 func (p *Post) Tripcode() *string    { return p.tripcode }
+func (p *Post) IPAddress() string    { return p.ipAddress }
 
 // Сеттеры
 func (p *Post) SetID(id int64)                   { p.id = id }
@@ -50,3 +53,4 @@ func (p *Post) SetCreatedAt(createdAt time.Time) { p.createdAt = createdAt }
 func (p *Post) SetImageURL(imageURL *string)     { p.imageURL = imageURL }
 func (p *Post) SetParentID(parentID *int64)      { p.parentID = parentID }
 func (p *Post) SetTripcode(tripcode *string)     { p.tripcode = tripcode }
+func (p *Post) SetIPAddress(ip string)           { p.ipAddress = ip }

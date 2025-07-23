@@ -6,7 +6,13 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/vladimirfedunov/2chan-clone/internal/entity"
 )
+
+type ThreadWithOP struct {
+	Thread *entity.Thread
+	OP     *entity.Post
+}
 
 func (h *Handler) AdminLoginPage(c *gin.Context) {
 	c.HTML(http.StatusOK, "admin_login.html", nil)
@@ -35,7 +41,16 @@ func (h *Handler) AdminPanel(c *gin.Context) {
 		c.HTML(http.StatusInternalServerError, "admin_panel.html", gin.H{"Error": err.Error()})
 		return
 	}
-	c.HTML(http.StatusOK, "admin_panel.html", gin.H{"Threads": threads})
+	var threadsWithOP []ThreadWithOP
+	for _, t := range threads {
+		posts, _ := h.PostService.ListPosts(c.Request.Context(), t.ID(), 1, 0)
+		var op *entity.Post
+		if len(posts) > 0 {
+			op = posts[0]
+		}
+		threadsWithOP = append(threadsWithOP, ThreadWithOP{Thread: t, OP: op})
+	}
+	c.HTML(http.StatusOK, "admin_panel.html", gin.H{"Threads": threadsWithOP})
 }
 
 func (h *Handler) AdminDeleteThread(c *gin.Context) {

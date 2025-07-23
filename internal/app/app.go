@@ -18,7 +18,7 @@ type App struct {
 
 func NewApp() *App {
 	// 1. Подключение к БД
-	dsn := "postgres://postgres:110920@localhost:5432/chan?sslmode=disable"
+	dsn := "postgres://YOUR_ACCOUNT:YOUR_PASSWORD@localhost:5432/YOUR_DB?sslmode=disable"
 	pool, err := postgres.NewPostgresPool(context.Background(), dsn)
 	if err != nil {
 		log.Fatalf("failed to connect to db: %v", err)
@@ -29,15 +29,17 @@ func NewApp() *App {
 	threadRepo := postgresql.NewPostgresThreadRepository(pool)
 	postRepo := postgresql.NewPostgresPostRepository(pool)
 	adminRepo := postgresql.NewPostgresAdminRepository(pool)
+	recentThreadRepo := postgresql.NewPostgresRecentThreadRepository(pool) // Передаем pool
 
 	// 3. Сервисы (usecase)
 	boardService := usecase.NewBoardService(boardRepo)
 	threadService := usecase.NewThreadService(threadRepo, postRepo)
 	postService := usecase.NewPostService(postRepo)
 	adminService := usecase.NewAdminService(adminRepo)
+	recentThreadService := usecase.NewRecentThreadService(recentThreadRepo) // Реальный репозиторий
 
 	// 4. Handler
-	handler := transport.NewHandler(boardService, threadService, postService, adminService)
+	handler := transport.NewHandler(boardService, threadService, postService, adminService, recentThreadService)
 
 	// 5. Gin router в release mode
 	gin.SetMode(gin.ReleaseMode)
@@ -46,7 +48,6 @@ func NewApp() *App {
 	router.Use(gin.Recovery())
 
 	transport.SetupRoutes(router, handler, adminService)
-
 	router.SetHTMLTemplate(loadTemplates())
 
 	return &App{router: router}

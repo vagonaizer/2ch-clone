@@ -10,7 +10,7 @@ import (
 type ThreadService interface {
 	ListThreads(ctx context.Context, boardSlug string, limit, offset int) ([]*entity.Thread, error)
 	GetThread(ctx context.Context, id int64) (*entity.Thread, []*entity.Post, error)
-	CreateThread(ctx context.Context, boardSlug, author, title, text string, imageURL *string, tripcode *string) (*entity.Thread, error)
+	CreateThread(ctx context.Context, boardSlug, author, title, text string, imageURL *string, tripcode *string, ipAddress string) (*entity.Thread, error)
 	StickyThread(ctx context.Context, id int64, sticky bool) error
 	LockThread(ctx context.Context, id int64, locked bool) error
 	DeleteThread(ctx context.Context, id int64) error
@@ -43,12 +43,12 @@ func (s *threadService) GetThread(ctx context.Context, id int64) (*entity.Thread
 	return thread, posts, nil
 }
 
-func (s *threadService) CreateThread(ctx context.Context, boardSlug, author, title, text string, imageURL *string, tripcode *string) (*entity.Thread, error) {
+func (s *threadService) CreateThread(ctx context.Context, boardSlug, author, title, text string, imageURL *string, tripcode *string, ipAddress string) (*entity.Thread, error) {
 	thread := entity.NewThread(boardSlug, title, author, false, false)
 	if err := s.threadRepo.Create(ctx, thread); err != nil {
 		return nil, err
 	}
-	post := entity.NewPost(thread.ID(), boardSlug, author, text, imageURL, nil, tripcode)
+	post := entity.NewPost(thread.ID(), boardSlug, author, text, imageURL, nil, tripcode, ipAddress)
 	if err := s.postRepo.Create(ctx, post); err != nil {
 		return nil, err
 	}
@@ -82,8 +82,8 @@ func (s *threadService) GetAllThreads(ctx context.Context) ([]*entity.Thread, er
 }
 
 type ThreadPreview struct {
-	Thread    *entity.Thread
-	FirstPost *entity.Post
+	Thread *entity.Thread
+	Posts  []*entity.Post // OP + до 3 последних комментариев
 }
 
 func (s *threadService) ListThreadPreviews(ctx context.Context, boardSlug string) ([]ThreadPreview, error) {
@@ -95,10 +95,19 @@ func (s *threadService) ListThreadPreviews(ctx context.Context, boardSlug string
 	for _, t := range threads {
 		posts, err := s.postRepo.GetByThread(ctx, t.ID())
 		if err != nil || len(posts) == 0 {
-			previews = append(previews, ThreadPreview{Thread: t, FirstPost: nil})
+			previews = append(previews, ThreadPreview{Thread: t, Posts: nil})
 			continue
 		}
-		previews = append(previews, ThreadPreview{Thread: t, FirstPost: posts[0]})
+		// Гарантируем, что у Thread установлен ID
+		t.SetID(posts[0].ThreadID())
+		var showPosts []*entity.Post
+		if len(posts) > 4 {
+			showPosts = append(showPosts, posts[0])                // OP
+			showPosts = append(showPosts, posts[len(posts)-3:]...) // последние 3
+		} else {
+			showPosts = posts
+		}
+		previews = append(previews, ThreadPreview{Thread: t, Posts: showPosts})
 	}
 	return previews, nil
 }

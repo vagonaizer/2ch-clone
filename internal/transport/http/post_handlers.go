@@ -52,7 +52,8 @@ func (h *Handler) CreatePost(c *gin.Context) {
 			imageURL = &url
 		}
 	}
-	_, err = h.PostService.CreatePost(c.Request.Context(), id, req.BoardSlug, req.Author, req.Text, imageURL, req.ParentID, req.Tripcode)
+	ip := c.ClientIP()
+	_, err = h.PostService.CreatePost(c.Request.Context(), id, req.BoardSlug, req.Author, req.Text, imageURL, req.ParentID, req.Tripcode, ip)
 	if err != nil {
 		c.String(http.StatusInternalServerError, err.Error())
 		return

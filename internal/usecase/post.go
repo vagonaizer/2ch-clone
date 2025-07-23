@@ -10,7 +10,7 @@ import (
 type PostService interface {
 	ListPosts(ctx context.Context, threadID int64, limit, offset int) ([]*entity.Post, error)
 	GetPost(ctx context.Context, id int64) (*entity.Post, error)
-	CreatePost(ctx context.Context, threadID int64, boardSlug, author, text string, imageURL *string, parentID *int64, tripcode *string) (*entity.Post, error)
+	CreatePost(ctx context.Context, threadID int64, boardSlug, author, text string, imageURL *string, parentID *int64, tripcode *string, ipAddress string) (*entity.Post, error)
 	DeletePost(ctx context.Context, id int64) error
 }
 
@@ -30,8 +30,8 @@ func (s *postService) GetPost(ctx context.Context, id int64) (*entity.Post, erro
 	return s.repo.GetByID(ctx, id)
 }
 
-func (s *postService) CreatePost(ctx context.Context, threadID int64, boardSlug, author, text string, imageURL *string, parentID *int64, tripcode *string) (*entity.Post, error) {
-	post := entity.NewPost(threadID, boardSlug, author, text, imageURL, parentID, tripcode)
+func (s *postService) CreatePost(ctx context.Context, threadID int64, boardSlug, author, text string, imageURL *string, parentID *int64, tripcode *string, ipAddress string) (*entity.Post, error) {
+	post := entity.NewPost(threadID, boardSlug, author, text, imageURL, parentID, tripcode, ipAddress)
 	if err := s.repo.Create(ctx, post); err != nil {
 		return nil, err
 	}

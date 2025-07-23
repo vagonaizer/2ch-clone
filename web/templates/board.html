@@ -1,395 +1,182 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>/{{.Board.Slug}}/ — {{.Board.Name}}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <style>
-        body {
-            background: url('http://www2.2ch.net/ba.gif') repeat;
-            font-family: "MS PGothic", "Open Sans", sans-serif;
-            margin: 0;
-            padding: 0;
-            width: 100vw;
-            max-width: none;
-            color: #000;
-            font-size: 14px;
-        }
-
-        a {
-            color: #0000CC;
-            text-decoration: none;
-        }
-
-        a:hover {
-            color: red;
-        }
-
-        .dvach-layout {
-            display: flex;
-            flex-direction: row-reverse;
-            margin: 0;
-            padding: 0;
-            gap: 0;
-            min-height: 100vh;
-        }
-
-        .dvach-nav {
-            width: 180px;
-            background: #EFEFEF;
-            border: 1px solid #aaa;
-            padding: 0;
-            min-height: 100vh;
-        }
-
-        .dvach-nav__title {
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #800000;
-        }
-
-        .dvach-nav__list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .dvach-nav__list li {
-            margin-bottom: 6px;
-        }
-
-        .dvach-nav__list li a {
-            display: block;
-            padding-left: 8px; /* или 10px, подбери визуально */
-        }
-
-        .dvach-main {
-            flex-grow: 1;
-            background: #F9F9F9;
-            border: 1px solid #aaa;
-            padding: 10px;
-            min-height: 100vh;
-        }
-
-        .board-header {
-            background: #EFEFEF;
-            border: 1px solid #888;
-            padding: 6px;
-            margin-bottom: 20px;
-        }
-
-        .board-title {
-            font-size: 16px;
-            margin: 5px 0;
-            color: #800000;
-        }
-
-        .board-desc {
-            font-size: 13px;
-            color: #444;
-        }
-
-        .back-link {
-            font-size: 13px;
-            color: #0000CC;
-        }
-
-        .thread-form {
-            background: #EFEFEF;
-            border: 1px solid #999;
-            padding: 8px;
-            margin-bottom: 20px;
-        }
-
-        .thread-form__input, .thread-form__textarea {
-            display: block;
-            width: 100%;
-            margin-bottom: 10px;
-            padding: 4px;
-            border: 1px solid #999;
-            background-color: #fff;
-            font-family: inherit;
-            font-size: 14px;
-        }
-
-        .thread-form__textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        .thread-form__button {
-            background: #DADADA;
-            border: 1px solid #666;
-            padding: 4px 10px;
-            cursor: pointer;
-        }
-
-        .threads-list {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .thread-preview {
-            background: #EFEFEF;
-            border-top: 1px solid #D8D8D8;
-            border-right: 1px solid #474747;
-            border-bottom: 1px solid #474747;
-            border-left: 1px solid #D8D8D8;
-            padding: 16px;
-            display: flex;
-            gap: 10px;
-            font-size: 15px;
-        }
-
-        .thread-preview__img {
-            max-width: 140px;
-            height: auto;
-            cursor: zoom-in;
-            border: 1px solid #666;
-        }
-
-        .thread-preview__content {
-            flex-grow: 1;
-        }
-
-        .thread-link {
-            font-weight: bold;
-            font-size: 14px;
-        }
-
-        .thread-preview__meta {
-            font-size: 12px;
-            color: #555;
-            margin: 5px 0;
-        }
-
-        .thread-preview__text {
-            font-size: 15px;
-            white-space: pre-wrap;
-        }
-
-        /* Модальное окно */
-        .img-modal {
-            position: fixed;
-            z-index: 9999;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            left: 0; top: 0; right: 0; bottom: 0;
-            background-color: rgba(0, 0, 0, 0.85);
-        }
-
-        .img-modal__img {
-            max-width: 90%;
-            max-height: 90%;
-            cursor: grab;
-            user-select: none;
-            -webkit-user-select: none;
-        }
-
-        .img-modal__close {
-            position: absolute;
-            top: 10px;
-            right: 20px;
-            color: white;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .visually-hidden {
-            position: absolute !important;
-            height: 1px; width: 1px;
-            overflow: hidden;
-            clip: rect(1px, 1px, 1px, 1px);
-        }
-
-        .thread-form-section {
-            display: flex;
-            justify-content: center;
-        }
-
-        .thread-form {
-            width: 320px;
-            min-width: 0;
-            margin: 0 auto 20px auto;
-        }
-
-        .thread-preview {
-            padding: 16px;
-            font-size: 15px;
-        }
-
-        .thread-preview__text {
-            font-size: 15px;
-        }
-
-        .thread-form,
-        .thread-form__input,
-        .thread-form__textarea {
-            box-sizing: border-box;
-        }
-
-        .board-title {
-            font-size: 20px;
-            font-weight: bold;
-            color: #800000;
-            margin: 5px 0;
-        }
-
-        .thread-link {
-            font-weight: bold;
-            font-size: 14px;
-            color: #800000;
-        }
-
-        .thread-form-flex {
-            display: flex;
-            align-items: flex-start;
-            gap: 16px;
-        }
-
-        .thread-form-gif {
-            width: 64px;
-            height: auto;
-            margin-top: 8px;
-            border: 1px solid #aaa;
-            background: #fff;
-        }
-    </style>
+    <title>{{ .Board.Name }} - {{ .Board.Description }}</title>
+    <link rel="stylesheet" href="/static/styles/board.css">
+    <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-<div id="img-modal" class="img-modal">
-    <span class="img-modal__close" id="img-modal-close">&times;</span>
-    <img class="img-modal__img" id="img-modal-img" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="preview">
-</div>
-
-<div class="dvach-layout">
-    <main class="dvach-main">
-        <div class="container">
-            <header class="board-header">
-                <a class="back-link" href="/">На главную</a>
-                <h1 class="board-title">/{{.Board.Slug}}/ — {{.Board.Name}}</h1>
-                <p class="board-desc">{{.Board.Description}}</p>
-            </header>
-
-            <section class="thread-form-section">
-                <div class="thread-form-flex">
-                    <form class="thread-form" action="/boards/{{.Board.Slug}}/threads" method="post" enctype="multipart/form-data">
-                        <input type="text" name="author" placeholder="Автор (опционально)" class="thread-form__input">
-                        <input type="text" name="title" placeholder="Заголовок (опционально)" class="thread-form__input">
-                        <textarea name="text" placeholder="Текст" class="thread-form__textarea"></textarea>
-                        <label for="image-upload" class="visually-hidden">Картинка</label>
-                        <input type="file" id="image-upload" name="image" accept="image/*" class="thread-form__input">
-                        <button type="submit" class="thread-form__button">Создать тред</button>
-                    </form>
-                    <img src="/static/img/pepe.gif" alt="pepe" class="thread-form-gif">
-                </div>
-            </section>
-
-            <section class="threads-list">
-                {{range .ThreadPreviews}}
-                <div class="thread-preview">
-                    {{if .FirstPost.ImageURL}}
-                    <img src="{{.FirstPost.ImageURL}}" class="thread-preview__img" alt="img">
-                    {{end}}
-                    <div class="thread-preview__content">
-                        <a class="thread-link" href="/threads/{{.Thread.ID}}">
-                            {{if .Thread.Title}}{{.Thread.Title}}{{else}}Без названия{{end}}
-                        </a>
-                        <div class="thread-preview__meta">
-                            {{.Thread.Author}} | {{.Thread.CreatedAt.Format "02.01.2006 15:04"}}
-                        </div>
-                        <div class="thread-preview__text">
-                            {{if .FirstPost}}{{.FirstPost.Text}}{{end}}
-                        </div>
-                    </div>
-                </div>
-                {{end}}
-            </section>
+    <header>
+        <div>
+            <a href="http://localhost:8080/">
+                <img src="/static/img/vagonach-logo.png" alt="Logo">
+            </a>
         </div>
+        <div>
+            <h1>Anonymous imageboard.</h1>
+        </div>
+    </header>
+
+    <main>
+        <div class="board-banner">
+            <img src="/static/img/banner.jpg" alt="Banner" class="board-banner-img">
+            <div class="board-title">
+                <span class="board-slug">/{{ .Board.Slug }}/</span> - {{ .Board.Name }}
+            </div>
+        </div>
+
+        <div class="start-thread-btn-wrap">
+            <button id="show-thread-form" class="start-thread-btn btn" type="button"
+                onclick="document.getElementById('thread-form').style.display='block'; this.style.display='none'; document.getElementById('close-thread-form').style.display='inline-block';">
+                [Start a New Thread]
+            </button>
+            <button id="close-thread-form" class="close-thread-btn btn" type="button" style="display:none"
+                onclick="document.getElementById('thread-form').style.display='none'; this.style.display='none'; document.getElementById('show-thread-form').style.display='inline-block';">
+                [Close]
+            </button>
+        </div>
+
+        <form id="thread-form" class="thread-form" style="display:none;"
+            hx-post="/boards/{{.Board.Slug}}/threads"
+            hx-target=".threads-list"
+            hx-swap="afterbegin"
+            enctype="multipart/form-data">
+            <input type="text" name="author" placeholder="Name" class="thread-form__input thread-form__input-wide">
+            <input type="text" name="title" placeholder="Title" class="thread-form__input thread-form__input-wide">
+            <textarea name="text" placeholder="Comment" class="thread-form__textarea thread-form__input-wide"></textarea>
+            <input type="file" name="image" accept="image/*" class="thread-form__input thread-form__input-wide">
+            <button type="submit" class="thread-form__button btn">Post</button>
+        </form>
+
+        <section class="threads-list">
+            {{range .ThreadPreviews}}
+                {{ $thread := .Thread }}
+                <div class="thread-preview-row">
+                    <!-- Основной пост треда -->
+                    <div class="thread-main-post">
+                        {{if .Posts}}
+                            {{with index .Posts 0}}
+                                {{if .ImageURL}}
+                                    <img src="{{.ImageURL}}" class="thread-preview-img" alt="img">
+                                {{end}}
+                                <div class="thread-preview-content">
+                                    <div class="thread-preview-header">
+                                        <span class="thread-title-small">
+                                            {{if $thread.Title}}{{$thread.Title}}{{else}}Без названия{{end}}
+                                        </span>
+                                        <span class="thread-author">
+                                            {{if .Author}}{{.Author}}{{else}}Аноним{{end}}
+                                        </span>
+                                        <span class="thread-date">{{$thread.CreatedAt.Format "01/02/06 15:04:05"}}</span>
+                                        <span class="thread-id">No.{{$thread.ID}}</span>
+                                        <a href="/threads/{{$thread.ID}}" class="reply-link">[Reply]</a>
+                                    </div>
+                                    <div class="thread-preview-text">{{.Text}}</div>
+                                </div>
+                            {{end}}
+                        {{end}}
+                    </div>
+
+                    <!-- Первые 3 комментария -->
+                    {{if gt (len .Posts) 1}}
+                        <div class="thread-replies">
+                            {{range $index, $post := .Posts}}
+                                {{if and (gt $index 0) (lt $index 4)}}
+                                    <div class="thread-reply">
+                                        <div class="reply-header">
+                                            <span class="reply-author">
+                                                {{if $post.Author}}{{$post.Author}}{{else}}Аноним{{end}}
+                                            </span>
+                                            <span class="reply-date">{{$post.CreatedAt.Format "01/02/06 15:04:05"}}</span>
+                                            <span class="reply-id">No.{{$post.ID}}</span>
+                                        </div>
+                                        <div class="reply-content">
+                                            {{if $post.ImageURL}}
+                                                <img src="{{$post.ImageURL}}" class="reply-image" alt="img">
+                                            {{end}}
+                                            <div class="reply-text">{{$post.Text}}</div>
+                                        </div>
+                                    </div>
+                                {{end}}
+                            {{end}}
+                            
+                            {{if gt (len .Posts) 4}}
+                                <div class="show-more-replies">
+                                    <a href="/threads/{{$thread.ID}}">[View more replies]</a>
+                                </div>
+                            {{end}}
+                        </div>
+                    {{end}}
+                </div>
+            {{end}}
+        </section>
     </main>
-    <nav class="dvach-nav">
-        <div class="dvach-nav__title">Доски</div>
-        <ul class="dvach-nav__list">
-            <li><a href="/boards/a">/a/ Аниме</a></li>
-            <li><a href="/boards/b">/b/ Бред</a></li>
-            <li><a href="/boards/po">/po/ Политика</a></li>
-            <li><a href="/boards/news">/news/ Новости</a></li>
-            <li><a href="/boards/soc">/soc/ Общение</a></li>
-            <li><a href="/boards/media">/media/ Анимация</a></li>
-            <li><a href="/boards/api">/api/ API</a></li>
-            <li><a href="/boards/rf">/rf/ Убежище</a></li>
-        </ul>
-    </nav>
-</div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    var modal = document.getElementById('img-modal');
-    var modalImg = document.getElementById('img-modal-img');
-    var closeBtn = document.getElementById('img-modal-close');
-    var dragging = false, startX = 0, startY = 0, imgX = 0, imgY = 0, scale = 1;
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Создаем навигационное меню
+            const nav = document.createElement('nav');
+            nav.className = 'dvach-nav';
+            nav.innerHTML = `
+                <div class="dvach-nav__title">Boards</div>
+                <ul class="dvach-nav__list">
+                    <li><a href="/boards/a">/a/ Anime</a></li>
+                    <li><a href="/boards/g">/g/ General</a></li>
+                    <li><a href="/boards/po">/po/ Politics</a></li>
+                    <li><a href="/boards/un">/un/ Universities</a></li>
+                    <li><a href="/boards/pr">/pr/ Programming</a></li>
+                </ul>`;
+            document.body.appendChild(nav);
 
-    function resetImg() {
-        scale = 1;
-        imgX = 0;
-        imgY = 0;
-        modalImg.style.transform = 'translate(0px,0px) scale(1)';
-        modalImg.style.cursor = 'grab';
-    }
+            // Создаем кнопку меню
+            const menuToggle = document.createElement('button');
+            menuToggle.className = 'menu-toggle btn';
+            menuToggle.textContent = '☰ Menu';
+            document.body.appendChild(menuToggle);
 
-    document.querySelectorAll('.thread-preview__img').forEach(function(img) {
-        img.addEventListener('click', function() {
-            modal.style.display = 'flex';
-            modalImg.src = this.src;
-            resetImg();
+            // Создаем overlay
+            const overlay = document.createElement('div');
+            overlay.className = 'nav-overlay';
+            document.body.appendChild(overlay);
+
+            const main = document.querySelector('main');
+
+            // Открытие/закрытие меню
+            menuToggle.addEventListener('click', function() {
+                nav.classList.toggle('open');
+                overlay.classList.toggle('active');
+                main.classList.toggle('content-shifted');
+                menuToggle.classList.toggle('open');
+                
+                if (nav.classList.contains('open')) {
+                    menuToggle.textContent = '✕ Close';
+                } else {
+                    menuToggle.textContent = '☰ Menu';
+                }
+            });
+
+            // Закрытие меню по клику на overlay
+            overlay.addEventListener('click', function() {
+                nav.classList.remove('open');
+                overlay.classList.remove('active');
+                main.classList.remove('content-shifted');
+                menuToggle.classList.remove('open');
+                menuToggle.textContent = '☰ Menu';
+            });
+
+            // Закрытие по Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && nav.classList.contains('open')) {
+                    nav.classList.remove('open');
+                    overlay.classList.remove('active');
+                    main.classList.remove('content-shifted');
+                    menuToggle.classList.remove('open');
+                    menuToggle.textContent = '☰ Menu';
+                }
+            });
         });
-    });
-
-    closeBtn.onclick = function() {
-        modal.style.display = 'none';
-    };
-
-    modal.onclick = function(e) {
-        if (e.target === this) this.style.display = 'none';
-    };
-
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') modal.style.display = 'none';
-    });
-
-    modalImg.addEventListener('mousedown', function(e) {
-        dragging = true;
-        startX = e.clientX - imgX;
-        startY = e.clientY - imgY;
-        modalImg.style.cursor = 'grabbing';
-        e.preventDefault();
-    });
-
-    document.addEventListener('mousemove', function(e) {
-        if (!dragging) return;
-        imgX = e.clientX - startX;
-        imgY = e.clientY - startY;
-        modalImg.style.transform = `translate(${imgX}px,${imgY}px) scale(${scale})`;
-    });
-
-    document.addEventListener('mouseup', function() {
-        dragging = false;
-        modalImg.style.cursor = 'grab';
-    });
-
-    modalImg.addEventListener('wheel', function(e) {
-        e.preventDefault();
-        var delta = e.deltaY < 0 ? 0.1 : -0.1;
-        scale += delta;
-        if (scale < 0.2) scale = 0.2;
-        if (scale > 5) scale = 5;
-        modalImg.style.transform = `translate(${imgX}px,${imgY}px) scale(${scale})`;
-    });
-});
-</script>
+    </script>
 </body>
 </html>

@@ -43,12 +43,19 @@ func (h *Handler) CreateThread(c *gin.Context) {
 			imageURL = &url
 		}
 	}
-	_, err = h.ThreadService.CreateThread(c.Request.Context(), slug, req.Author, req.Title, req.Text, imageURL, req.Tripcode)
+	ip := c.ClientIP()
+	thread, err := h.ThreadService.CreateThread(c.Request.Context(), slug, req.Author, req.Title, req.Text, imageURL, req.Tripcode, ip)
 	if err != nil {
 		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}
-	c.Redirect(http.StatusSeeOther, "/boards/"+slug)
+
+	if c.GetHeader("HX-Request") != "" {
+		c.Header("HX-Redirect", "/threads/"+strconv.FormatInt(thread.ID(), 10))
+		c.Status(http.StatusNoContent)
+		return
+	}
+	c.Redirect(http.StatusSeeOther, "/threads/"+strconv.FormatInt(thread.ID(), 10))
 }
 
 func (h *Handler) GetThread(c *gin.Context) {

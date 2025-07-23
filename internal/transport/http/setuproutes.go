@@ -9,9 +9,15 @@ import (
 )
 
 func SetupRoutes(router *gin.Engine, h *Handler, adminService *usecase.AdminService) {
+	router.Static("/static", "./web")
+
+	// Main pages
+	router.GET("/", h.IndexPage)
+	router.GET("/boards/:slug", h.BoardPage)
+	router.GET("/about", h.AboutPage) // Новый роут
+
 	// Boards
 	router.GET("/boards", h.GetBoards)
-	//router.GET("/boards/:slug", h.GetBoard)
 
 	// Threads
 	router.GET("/boards/:slug/threads", h.GetThreads)
@@ -27,10 +33,7 @@ func SetupRoutes(router *gin.Engine, h *Handler, adminService *usecase.AdminServ
 	router.GET("/posts/:id", h.GetPost)
 	router.DELETE("/posts/:id", h.DeletePost)
 
-	router.Static("/static", "./web")
-
-	router.GET("/", h.IndexPage)
-	router.GET("/boards/:slug", h.BoardPage)
+	// Admin
 	router.GET("/admin/login", h.AdminLoginPage)
 	router.POST("/admin/login", h.AdminLogin)
 	router.GET("/admin/logout", h.AdminLogout)
@@ -48,8 +51,7 @@ func adminAuthMiddleware(adminService *usecase.AdminService) gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		// Проверяем наличие админа в базе
-		// adminID — строка, нужно привести к int64
+
 		var id int64
 		_, err = fmt.Sscanf(adminID, "%d", &id)
 		if err != nil {
@@ -57,12 +59,14 @@ func adminAuthMiddleware(adminService *usecase.AdminService) gin.HandlerFunc {
 			c.Abort()
 			return
 		}
+
 		admin, err := adminService.GetByID(c.Request.Context(), id)
 		if err != nil || admin == nil {
 			c.Redirect(http.StatusSeeOther, "/admin/login")
 			c.Abort()
 			return
 		}
+
 		c.Next()
 	}
 }

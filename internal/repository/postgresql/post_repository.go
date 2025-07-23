@@ -19,7 +19,7 @@ func NewPostgresPostRepository(pool *pgxpool.Pool) repository.PostRepository {
 }
 
 func (r *PostgresPostRepository) GetByThread(ctx context.Context, threadID int64) ([]*entity.Post, error) {
-	rows, err := r.pool.Query(ctx, `SELECT id, thread_id, board_slug, author, text, created_at, image_url, parent_id, tripcode FROM posts WHERE thread_id=$1 ORDER BY created_at ASC`, threadID)
+	rows, err := r.pool.Query(ctx, `SELECT id, thread_id, board_slug, author, text, created_at, image_url, parent_id, tripcode, ip_address FROM posts WHERE thread_id=$1 ORDER BY created_at ASC`, threadID)
 	if err != nil {
 		return nil, err
 	}
@@ -33,10 +33,11 @@ func (r *PostgresPostRepository) GetByThread(ctx context.Context, threadID int64
 		var imageURL *string
 		var parentID *int64
 		var tripcode *string
-		if err := rows.Scan(&id, &threadID, &boardSlug, &author, &text, &createdAt, &imageURL, &parentID, &tripcode); err != nil {
+		var ipAddress string
+		if err := rows.Scan(&id, &threadID, &boardSlug, &author, &text, &createdAt, &imageURL, &parentID, &tripcode, &ipAddress); err != nil {
 			return nil, err
 		}
-		post := entity.NewPost(threadID, boardSlug, author, text, imageURL, parentID, tripcode)
+		post := entity.NewPost(threadID, boardSlug, author, text, imageURL, parentID, tripcode, ipAddress)
 		post.SetID(id)
 		post.SetCreatedAt(createdAt)
 		posts = append(posts, post)
@@ -45,7 +46,7 @@ func (r *PostgresPostRepository) GetByThread(ctx context.Context, threadID int64
 }
 
 func (r *PostgresPostRepository) GetByID(ctx context.Context, id int64) (*entity.Post, error) {
-	row := r.pool.QueryRow(ctx, `SELECT id, thread_id, board_slug, author, text, created_at, image_url, parent_id, tripcode FROM posts WHERE id=$1`, id)
+	row := r.pool.QueryRow(ctx, `SELECT id, thread_id, board_slug, author, text, created_at, image_url, parent_id, tripcode, ip_address FROM posts WHERE id=$1`, id)
 	var (
 		pid                     int64
 		threadID                int64
@@ -54,19 +55,20 @@ func (r *PostgresPostRepository) GetByID(ctx context.Context, id int64) (*entity
 		imageURL                *string
 		parentID                *int64
 		tripcode                *string
+		ipAddress               string
 	)
-	if err := row.Scan(&pid, &threadID, &boardSlug, &author, &text, &createdAt, &imageURL, &parentID, &tripcode); err != nil {
+	if err := row.Scan(&pid, &threadID, &boardSlug, &author, &text, &createdAt, &imageURL, &parentID, &tripcode, &ipAddress); err != nil {
 		return nil, err
 	}
-	post := entity.NewPost(threadID, boardSlug, author, text, imageURL, parentID, tripcode)
+	post := entity.NewPost(threadID, boardSlug, author, text, imageURL, parentID, tripcode, ipAddress)
 	post.SetID(pid)
 	post.SetCreatedAt(createdAt)
 	return post, nil
 }
 
 func (r *PostgresPostRepository) Create(ctx context.Context, post *entity.Post) error {
-	row := r.pool.QueryRow(ctx, `INSERT INTO posts (thread_id, board_slug, author, text, created_at, image_url, parent_id, tripcode) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING id`,
-		post.ThreadID(), post.BoardSlug(), post.Author(), post.Text(), post.CreatedAt(), post.ImageURL(), post.ParentID(), post.Tripcode())
+	row := r.pool.QueryRow(ctx, `INSERT INTO posts (thread_id, board_slug, author, text, created_at, image_url, parent_id, tripcode, ip_address) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING id`,
+		post.ThreadID(), post.BoardSlug(), post.Author(), post.Text(), post.CreatedAt(), post.ImageURL(), post.ParentID(), post.Tripcode(), post.IPAddress())
 	var id int64
 	if err := row.Scan(&id); err != nil {
 		return err
@@ -81,7 +83,7 @@ func (r *PostgresPostRepository) Delete(ctx context.Context, id int64) error {
 }
 
 func (r *PostgresPostRepository) GetRecent(ctx context.Context, threadID int64, limit int) ([]*entity.Post, error) {
-	rows, err := r.pool.Query(ctx, `SELECT id, thread_id, board_slug, author, text, created_at, image_url, parent_id, tripcode FROM posts WHERE thread_id=$1 ORDER BY created_at DESC LIMIT $2`, threadID, limit)
+	rows, err := r.pool.Query(ctx, `SELECT id, thread_id, board_slug, author, text, created_at, image_url, parent_id, tripcode, ip_address FROM posts WHERE thread_id=$1 ORDER BY created_at DESC LIMIT $2`, threadID, limit)
 	if err != nil {
 		return nil, err
 	}
@@ -95,10 +97,11 @@ func (r *PostgresPostRepository) GetRecent(ctx context.Context, threadID int64, 
 		var imageURL *string
 		var parentID *int64
 		var tripcode *string
-		if err := rows.Scan(&id, &threadID, &boardSlug, &author, &text, &createdAt, &imageURL, &parentID, &tripcode); err != nil {
+		var ipAddress string
+		if err := rows.Scan(&id, &threadID, &boardSlug, &author, &text, &createdAt, &imageURL, &parentID, &tripcode, &ipAddress); err != nil {
 			return nil, err
 		}
-		post := entity.NewPost(threadID, boardSlug, author, text, imageURL, parentID, tripcode)
+		post := entity.NewPost(threadID, boardSlug, author, text, imageURL, parentID, tripcode, ipAddress)
 		post.SetID(id)
 		post.SetCreatedAt(createdAt)
 		posts = append(posts, post)

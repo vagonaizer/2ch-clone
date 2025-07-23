@@ -1,146 +1,63 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Двач</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Классический фон и стиль -->
-    <style>
-        body {
-            background: url('http://www2.2ch.net/ba.gif') repeat;
-            font-family: "MS PGothic", "Open Sans", sans-serif;
-            margin: 0 auto;
-            padding: 0;
-            width: 90%;
-            max-width: 960px;
-            color: #000;
-            font-size: 14px;
-        }
-
-        a {
-            color: #0000CC;
-            text-decoration: none;
-        }
-        a:hover {
-            color: red;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 10px;
-        }
-
-        .header-banner {
-            max-width: 300px;
-            height: auto;
-            display: block;
-            margin: 0 auto;
-            border: 1px solid #888;
-        }
-
-        .header__main {
-            font-size: 18px;
-            font-weight: bold;
-            color: #800000;
-            background-color: #EFEFEF;
-            padding: 4px;
-            border: 1px solid #999;
-            margin-top: 5px;
-        }
-
-        .main {
-            background-color: #f9f9f9;
-            padding: 10px;
-            border: 1px solid #aaa;
-        }
-
-        .main__block {
-            margin-bottom: 20px;
-        }
-
-        .main__meta {
-            background-color: #EFEFEF;
-            border: 1px solid #aaa;
-            padding: 8px;
-            font-size: 13px;
-            line-height: 1.5;
-        }
-
-        .github-link {
-            color: #0000CC;
-        }
-
-        .boards__ul {
-            list-style-type: none;
-            padding-left: 0;
-            margin: 0;
-        }
-
-        .boards__item {
-            margin-bottom: 10px;
-            padding: 6px;
-            background: #F0F0F0;
-            border-top: 1px solid #D8D8D8;
-            border-left: 1px solid #D8D8D8;
-            border-right: 1px solid #474747;
-            border-bottom: 1px solid #474747;
-        }
-
-        .boards__link {
-            font-weight: bold;
-            font-size: 14px;
-            color: #000;
-        }
-
-        .boards__desc {
-            display: block;
-            font-size: 12px;
-            color: #555;
-            margin-left: 10px;
-        }
-
-        footer {
-            margin-top: 20px;
-            text-align: center;
-            font-size: 12px;
-            color: #555;
-            padding: 8px;
-            background-color: #EFEFEF;
-            border-top: 1px solid #aaa;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anonymous imageboard</title>
+    <link rel="stylesheet" href="/static/styles/index.css">
 </head>
 <body>
-    <header class="header">
-        <img src="/static/img/soyjak.gif" alt="Banner" class="header-banner">
-        <div class="header__main">vagonChan</div>
+    <header>
+        <div>
+            <img src="/static/img/vagonach-logo.png" alt="Logo">
+        </div>
+        <div>
+            <h1>Anonymous imageboard.</h1>
+        </div>
     </header>
-    <main class="main">
-        <section class="main__block main__meta">
-            <span class="paragraph">
-                <a href="https://github.com/vladimirfedunov" target="_blank" rel="noopener" class="github-link">
-                    github.com/vladimirfedunov
-                </a><br><br>
-                Этот проект написан на Go с использованием Gin, PostgreSQL, HTML, чистых Go-шаблонов и кастомного CSS.
-                Всё реализовано вручную: архитектура, репозитории, бизнес-логика, миграции, роутинг, формы,
-                загрузка файлов, минимальная админка. Дизайн вдохновлён классическими имиджбордами,
-                но с современными подходами. Всё делалось ради фана и практики.
-            </span>
-        </section>
-        <section class="main__block boards">
-            <ul class="boards__ul">
-                {{range .Boards}}
-                <li class="boards__item">
-                    <a class="boards__link" href="/boards/{{.Slug}}/">/{{.Slug}}/ — {{.Name}}</a>
-                    <span class="boards__desc">{{.Description}}</span>
-                </li>
-                {{end}}
+
+    <main>
+        <section class="boards-box">
+            <div class="boards-header">Boards</div>
+            <ul>
+                <li><a href="/boards/g">General</a></li>
+                <li><a href="/boards/a">Anime</a></li>
+                <li><a href="/boards/pr">Programming</a></li>
+                <li><a href="/boards/un">Universities</a></li>
+                <li><a href="/boards/po">Politics</a></li>
             </ul>
         </section>
+
+        <section class="recent-threads-box">
+            <div class="recent-threads-header">Recent Threads</div>
+            <div class="recent-threads-list">
+                {{range .RecentThreads}}
+                <div class="recent-thread-item">
+                    {{if .ImageURL}}
+                    <img src="{{.ImageURL}}" alt="Thread image" class="recent-thread-img">
+                    {{else}}
+                    <div class="recent-thread-no-img"></div>
+                    {{end}}
+                    <div class="recent-thread-content">
+                        <div class="recent-thread-header">
+                            <span class="recent-thread-board">/{{.BoardSlug}}/</span>
+                            {{if .Title}}
+                            <span class="recent-thread-title">{{.Title}}</span>
+                            {{end}}
+                            <span class="recent-thread-date">{{.CreatedAt.Format "02.01 15:04"}}</span>
+                        </div>
+                        <div class="recent-thread-text">{{.TruncatedText}}</div>
+                        <a href="/threads/{{.ID}}" class="recent-thread-link">Read more →</a>
+                    </div>
+                </div>
+                {{end}}
+            </div>
+        </section>
     </main>
-    <footer>
-        <div class="footer__text">я писал эту штуку 15 часов</div>
-    </footer>
+
+    <div class="footer-links">
+        <a href="/about">FAQ</a>
+        <a href="https://github.com/vagonaizer">Github</a>
+    </div>
 </body>
 </html>
